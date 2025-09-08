@@ -8,40 +8,40 @@ import {
   Delete,
 } from '@nestjs/common';
 import { ItemsService } from './items.service';
-import { Item } from './items.model';
+import { Item } from '../../generated/prisma/client';
 import { CreateItemDto } from './dto/create-item.dto';
 
 @Controller('items')
 export class ItemsController {
-  constructor(private readonly itemsService: ItemsService) {}
+  constructor(private readonly itemsService: ItemsService) { }
 
   @Get()
-  findAll(): Item[] {
+  async findAll(): Promise<Item[]> {
     return this.itemsService.findAll();
   }
 
   @Get(':id')
-  findById(@Param('id') id: string): Item | undefined {
+  async findById(@Param('id') id: string): Promise<Item> {
     return this.itemsService.findById(id);
   }
 
   @Post()
-  create(@Body() createItemDto: CreateItemDto): Item {
-    return this.itemsService.create(createItemDto);
+  async create(@Body() createItemDto: CreateItemDto): Promise<Item> {
+    return await this.itemsService.create(createItemDto);
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body('name') name: string,
     @Body('price') price: number,
     @Body('description') description: string,
-  ): Item {
-    return this.itemsService.update(id, name, price, description);
+  ): Promise<Item> {
+    return await this.itemsService.update(id, name, price, description);
   }
 
   @Delete(':id')
-  delete(@Param('id') id: string): void {
-    this.itemsService.delete(id);
+  async delete(@Param('id') id: string): Promise<void> {
+    await this.itemsService.delete(id);
   }
 }

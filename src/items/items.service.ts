@@ -1,51 +1,62 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Item } from './items.model';
+import { Item } from '../../generated/prisma/client';
 import { CreateItemDto } from './dto/create-item.dto';
-import { v4 as uuid } from 'uuid';
+import { ItemStatus } from '../../generated/prisma/client';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class ItemsService {
-  private readonly items: Item[] = [];
+  constructor(private readonly prisma: PrismaService) {}
 
-  findAll(): Item[] {
-    return this.items;
+  async findAll(): Promise<Item[]> {
+    return await this.prisma.item.findMany();
   }
 
-  findById(id: string): Item {
-    const item = this.items.find((item) => item.id === id);
+  async findById(id: string): Promise<Item> {
+    const item = await this.prisma.item.findUnique({
+      where: { id },
+    });
     if (!item) {
       throw new NotFoundException('Item not found');
     }
     return item;
   }
 
-  create(createItemDto: CreateItemDto): Item {
-    const item: Item = {
-      id: uuid(),
-      ...createItemDto,
-      status: 'ON_SALE',
-    };
-    this.items.push(item);
-    return item;
+  async create(createItemDto: CreateItemDto): Promise<Item> {
+    const { name, price, description } = createItemDto;
+    return await this.prisma.item.create({
+      data: {
+        name,
+        price,
+        description,
+        status: ItemStatus.ON_SALE,
+      },
+    });
   }
 
-  update(id: string, name: string, price: number, description: string): Item {
-    const item = this.findById(id);
+  async update(
+    id: string,
+    name: string,
+    price: number,
+    description: string,
+  ): Promise<Item> {
+    const item = await this.findById(id);
     if (!item) {
       throw new NotFoundException('Item not found');
     }
-    item.name = name;
-    item.price = price;
-    item.description = description;
-    return item;
+    return await this.prisma.item.update({
+      where: { id },
+      data: { name, price, description },
+    });
   }
 
-  delete(id: string): void {
-    const item = this.findById(id);
+  async delete(id: string): Promise<void> {
+    const item = await this.findById(id);
     if (!item) {
       throw new NotFoundException('Item not found');
     }
-    const index = this.items.findIndex((item) => item.id === id);
-    this.items.splice(index, 1);
+    await this.prisma.item.delete({
+      where: { id },
+    });
   }
 }
