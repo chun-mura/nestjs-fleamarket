@@ -11,8 +11,12 @@ export class ItemsService {
     return this.items;
   }
 
-  findById(id: string): Item | undefined {
-    return this.items.find((item) => item.id === id);
+  findById(id: string): Item {
+    const item = this.items.find((item) => item.id === id);
+    if (!item) {
+      throw new NotFoundException('Item not found');
+    }
+    return item;
   }
 
   create(createItemDto: CreateItemDto): Item {
