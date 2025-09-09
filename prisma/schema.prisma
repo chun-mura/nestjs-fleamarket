@@ -20,6 +20,8 @@ model Item {
   price       Int
   description String?
   status      ItemStatus @default(ON_SALE)
+  userId      String     @db.Uuid
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime   @default(now()) @db.Timestamp(0)
   updatedAt   DateTime   @updatedAt @db.Timestamp(0)
 }
@@ -27,4 +29,20 @@ model Item {
 enum ItemStatus {
   ON_SALE
   SOLD_OUT
+}
+
+model User {
+  id        String     @id @default(uuid()) @db.Uuid
+  name      String     @db.VarChar(255)
+  email     String     @db.VarChar(255)
+  password  String     @db.VarChar(255)
+  status    UserStatus @default(FREE)
+  items     Item[]
+  createdAt DateTime   @default(now()) @db.Timestamp(0)
+  updatedAt DateTime   @updatedAt @db.Timestamp(0)
+}
+
+enum UserStatus {
+  FREE
+  PREMIUM
 }
