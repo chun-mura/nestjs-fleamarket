@@ -6,10 +6,15 @@ import {
   Param,
   Patch,
   Delete,
+  Request,
 } from '@nestjs/common';
 import { ItemsService } from './items.service';
 import { Item } from '../../generated/prisma/client';
 import { CreateItemDto } from './dto/create-item.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { UseGuards } from '@nestjs/common';
+import { Request as ExpressRequest } from 'express';
+import { RequestUser } from '../types/requestUser';
 
 @Controller('items')
 export class ItemsController {
@@ -26,8 +31,12 @@ export class ItemsController {
   }
 
   @Post()
-  async create(@Body() createItemDto: CreateItemDto): Promise<Item> {
-    return await this.itemsService.create(createItemDto);
+  @UseGuards(AuthGuard('jwt'))
+  async create(
+    @Body() createItemDto: CreateItemDto,
+    @Request() req: ExpressRequest & { user: RequestUser },
+  ): Promise<Item> {
+    return await this.itemsService.create(createItemDto, req.user.id);
   }
 
   @Patch(':id')
