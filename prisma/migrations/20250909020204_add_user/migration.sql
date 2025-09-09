@@ -16,7 +16,7 @@ CREATE TABLE "public"."User" (
     "name" VARCHAR(255) NOT NULL,
     "email" VARCHAR(255) NOT NULL,
     "password" VARCHAR(255) NOT NULL,
-    "status" "public"."UserStatus" NOT NULL DEFAULT 'FREE',
+    "status" "public"."UserStatus" NOT NULL,
     "createdAt" TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(0) NOT NULL,
 

@@ -36,7 +36,7 @@ model User {
   name      String     @db.VarChar(255)
   email     String     @db.VarChar(255)
   password  String     @db.VarChar(255)
-  status    UserStatus @default(FREE)
+  status    UserStatus
   items     Item[]
   createdAt DateTime   @default(now()) @db.Timestamp(0)
   updatedAt DateTime   @updatedAt @db.Timestamp(0)
