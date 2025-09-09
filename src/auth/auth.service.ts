@@ -16,7 +16,7 @@ export class AuthService {
         name,
         email,
         password: hashedPassword,
-        status: UserStatus.FREE
+        status: UserStatus.FREE,
       },
     });
   }
