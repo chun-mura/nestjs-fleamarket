@@ -40,6 +40,7 @@ export class ItemsController {
   }
 
   @Patch(':id')
+  @UseGuards(AuthGuard('jwt'))
   async update(
     @Param('id') id: string,
     @Body('name') name: string,
@@ -50,7 +51,11 @@ export class ItemsController {
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string): Promise<void> {
-    await this.itemsService.delete(id);
+  @UseGuards(AuthGuard('jwt'))
+  async delete(
+    @Param('id') id: string,
+    @Request() req: ExpressRequest & { user: RequestUser },
+  ): Promise<void> {
+    await this.itemsService.delete(id, req.user.id);
   }
 }

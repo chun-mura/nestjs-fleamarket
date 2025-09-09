@@ -50,13 +50,13 @@ export class ItemsService {
     });
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: string, userId: string): Promise<void> {
     const item = await this.findById(id);
     if (!item) {
       throw new NotFoundException('Item not found');
     }
     await this.prisma.item.delete({
-      where: { id },
+      where: { id, userId },
     });
   }
 }
