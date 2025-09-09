@@ -13,7 +13,7 @@ import { CreateItemDto } from './dto/create-item.dto';
 
 @Controller('items')
 export class ItemsController {
-  constructor(private readonly itemsService: ItemsService) { }
+  constructor(private readonly itemsService: ItemsService) {}
 
   @Get()
   async findAll(): Promise<Item[]> {
